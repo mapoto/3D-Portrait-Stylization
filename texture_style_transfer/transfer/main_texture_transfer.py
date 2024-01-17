@@ -7,12 +7,12 @@ import imageio
 import numpy as np
 import tqdm
 
-import neural_renderer
-from transfer.model_ortho_RE import RendererModel
-from transfer.losses import compute_tv_loss
-from transfer.utils import *
-from transfer.vgg_caffe import VGGLoss_caffe_4_multiview
-from pytorch_STROTSS_improved.strotss_interface import do_strotss
+import texture_style_transfer.neural_renderer as neural_renderer
+from texture_style_transfer.transfer.model_ortho_RE import RendererModel
+from texture_style_transfer.transfer.losses import compute_tv_loss
+from texture_style_transfer.transfer.utils import *
+from texture_style_transfer.transfer.vgg_caffe import VGGLoss_caffe_4_multiview
+from texture_style_transfer.pytorch_STROTSS_improved.strotss_interface import do_strotss
 
             
 def run(name_one_data, lr_textures=0.025, iteration=200, image_size=512, texture_size=14):

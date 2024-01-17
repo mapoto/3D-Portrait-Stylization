@@ -5,11 +5,13 @@ import time
 import torch
 import torch.nn.functional as F
 
-from pytorch_STROTSS_improved import utils
-from pytorch_STROTSS_improved import vgg_pt
-from pytorch_STROTSS_improved import loss_utils
+from . import utils
+from . import vgg_pt
+from . import loss_utils
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+print('Using cuda: ' + str(torch.cuda.is_available()))
+
 
 def style_transfer(stylized_im, content_im, style_path, output_path,
                    long_side, content_weight, content_regions, style_regions,
@@ -96,6 +98,9 @@ def run_style_transfer(content_path, style_path, content_weight, max_scale, cont
     _, style_H, style_W = style_image.size()
     print(f'content image size {content_H}x{content_W}, style image size {style_H}x{style_W}')
 
+    stylized_im = 0
+    final_loss = 0
+
     for scale in range(1, max_scale+1):
         t0 = time.time()
 
@@ -111,7 +116,7 @@ def run_style_transfer(content_path, style_path, content_weight, max_scale, cont
         if scale == 1:
             style_image_mean = style_image.unsqueeze(0).mean(dim=(2, 3), keepdim=True).to(device)
             stylized_im = style_image_mean + bottom_laplacian
-        elif scale > 1 and scale < max_scale:
+        elif 1 < scale < max_scale:
             stylized_im = utils.resize(stylized_im.clone(), content_scaled_size) + bottom_laplacian
         elif scale == max_scale:
             stylized_im = utils.resize(stylized_im.clone(), content_scaled_size)
@@ -126,6 +131,9 @@ def run_style_transfer(content_path, style_path, content_weight, max_scale, cont
 
     canvas = torch.clamp(stylized_im[0],-0.5,0.5).data.cpu().numpy().transpose(1,2,0)
     print(f'Saving to output to {output_path}.')
-    imageio.imwrite(output_path, canvas)
+    from PIL import Image
+
+    im = Image.fromarray(((canvas * 255) + 128).astype(np.uint8), 'RGB')
+    im.save(output_path)
 
     return final_loss, stylized_im

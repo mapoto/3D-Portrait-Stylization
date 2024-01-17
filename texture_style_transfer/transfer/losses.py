@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 import numpy as np
 
-from vgg_caffe import VGGLoss_caffe
+from .vgg_caffe import VGGLoss_caffe
 
 VGG_MEAN = torch.tensor([[[0.485]], [[0.456]], [[0.406]]], requires_grad=False).cuda()
 VGG_STD = torch.tensor([[[0.229]], [[0.224]], [[0.225]]], requires_grad=False).cuda()

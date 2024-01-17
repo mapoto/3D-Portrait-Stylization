@@ -29,8 +29,10 @@ def do_strotss(content, style, content_guidance='', style_guidance='', output='o
         content_img, style_img = imageio.imread(content), imageio.imread(style)
         content_regions, style_regions = [np.ones(content_img.shape[:2], dtype=np.float32)], [np.ones(style_img.shape[:2], dtype=np.float32)]
 
-    loss, canvas = style_transfer.run_style_transfer(content, style, content_weight,
+    loss, stylized_im = style_transfer.run_style_transfer(content, style, content_weight,
             max_scale, content_regions, style_regions, output,
             print_freq=print_freq, use_sinkhorn=use_sinkhorn,
             sinkhorn_reg=sinkhorn_reg, sinkhorn_maxiter=sinkhorn_maxiter
         )
+
+    return loss, stylized_im
